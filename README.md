@@ -11,7 +11,7 @@ independent layers.
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6)
 ![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20RLS-3ecf8e)
-![Tests](https://img.shields.io/badge/tests-218%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-222%20passing-brightgreen)
 
 ---
 
@@ -192,6 +192,7 @@ In the Supabase dashboard, open **SQL Editor** and run each file in
 | `0014_events.sql` | Events, registration with capacity and waiting list, attendance |
 | `0015_resources.sql` | Resource catalogue, tags, verification guard, saved lists |
 | `0016_roadmaps.sql` | Development roadmaps, milestones, mentor-review gate |
+| `0017_notifications.sql` | Notifications raised by triggers, realtime publication |
 
 **0010 and 0011 must be run as two separate statements.** PostgreSQL will not
 let one transaction add an enum value and then use it, and both the SQL Editor
@@ -386,7 +387,7 @@ the caller is not entitled to.
 npm test
 ```
 
-218 unit tests covering profile-completion gate logic, every validation schema,
+222 unit tests covering profile-completion gate logic, every validation schema,
 directory filter parsing, CSV escaping, analytics aggregation, the role
 table, assessment auto-grading, event registration rules, and
 resource recommendation matching, and
@@ -422,7 +423,10 @@ is real rather than demo.
 | Events | Complete |
 | VTU resources and certification recommendations | Complete |
 | Development roadmap | Rule-based engine complete; AI generation not started |
-| Notifications and reporting | Not started |
+| Notifications and reporting | Complete (CSV; PDF not built) |
+
+See [`MANUAL-STEPS.md`](MANUAL-STEPS.md) for everything still needing a
+person — outstanding migrations, open decisions, and deliberate gaps.
 
 See [`PRD.md`](PRD.md) for full product requirements and
 [`ARCHITECTURE.md`](ARCHITECTURE.md) for the system design.

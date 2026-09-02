@@ -36,6 +36,7 @@ function navItems(
       label: "Roadmap reviews",
       badge: pendingRoadmaps,
     },
+    { href: "/notifications", label: "Notifications" },
   ];
 }
 

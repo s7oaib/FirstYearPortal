@@ -111,7 +111,7 @@ export function evaluateSections(snapshot: ProfileSnapshot): SectionStatus[] {
       complete: identityComplete,
       missing: identityComplete
         ? null
-        : "Some personal, guardian, or residence details are missing.",
+        : "Add your parent/guardian details, contact number, and residence type.",
     },
     {
       key: "academic",

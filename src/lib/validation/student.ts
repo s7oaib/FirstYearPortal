@@ -114,6 +114,32 @@ export type RegistrationValues = z.infer<typeof registrationSchema>;
 
 // --- Profile completion sections -------------------------------------------
 
+export const personalSectionSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Enter your full name.")
+    .max(120, "That name is too long."),
+  dob: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter your date of birth.")
+    .refine((value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return false;
+      const age =
+        (Date.now() - date.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+      return age >= 15 && age <= 60;
+    }, "Date of birth looks incorrect for a first-year student."),
+  phone: phoneSchema,
+  state: z.string().trim().min(2, "Enter your state."),
+  city: z.string().trim().min(2, "Enter your city or town."),
+  guardianName: z.string().trim().min(2, "Enter your parent or guardian's name."),
+  guardianPhone: phoneSchema,
+  residenceType: z.enum(RESIDENCE_VALUES, {
+    errorMap: () => ({ message: "Select where you live during term." }),
+  }),
+});
+
 const percentage = z.coerce
   .number({ invalid_type_error: "Enter a percentage." })
   .min(0, "Cannot be below 0.")
@@ -164,5 +190,7 @@ export const selectionSectionSchema = z.object({
     .min(1, "Select at least one option."),
 });
 
+export type PersonalSectionValues = z.infer<typeof personalSectionSchema>;
 export type AcademicSectionValues = z.infer<typeof academicSectionSchema>;
 export type SelectionSectionValues = z.infer<typeof selectionSectionSchema>;
+

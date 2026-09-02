@@ -19,6 +19,7 @@ export type AccountStatus = "pending" | "active" | "rejected" | "suspended";
 import type { ResidenceType } from "@/config/residence";
 import type { EventKind, RegistrationStatus } from "@/config/events";
 import type { ResourceKind } from "@/config/resources";
+import type { NotificationKind } from "@/config/notifications";
 import type { Horizon } from "@/lib/roadmap/generate";
 import type { RoadmapSource, RoadmapStatus } from "@/config/roadmap";
 import type {
@@ -281,6 +282,23 @@ export type Database = {
           size_bytes: number;
         };
         Update: never;
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          kind: NotificationKind;
+          title: string;
+          body: string | null;
+          link: string | null;
+          entity_type: string | null;
+          entity_id: string | null;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: Partial<{ read_at: string | null }>;
         Relationships: [];
       };
       student_roadmaps: {

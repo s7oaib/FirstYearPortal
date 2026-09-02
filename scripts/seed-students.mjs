@@ -45,10 +45,32 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 // --- Defaults ---------------------------------------------------------------
 
+/**
+ * Real student names are personal data and do not belong in a public
+ * repository, so they are read from a gitignored file at run time instead of
+ * being written into this script.
+ *
+ * Create `students.local.json` in the project root:
+ *
+ *     { "1HK24AI001": "Full Name", "1HK24AI002": "Another Name" }
+ *
+ * Any USN without an entry falls back to its USN as the name, which the
+ * student can correct themselves once they sign in.
+ */
+function loadStudentNames() {
+  try {
+    return JSON.parse(readFileSync(join(root, "students.local.json"), "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+const STUDENT_NAMES = loadStudentNames();
+
 const DEFAULTS = {
   prefix: "1HK24AI",
   from: 1,
-  to: 15,
+  to: 30,
   dept: "AIML",
   domain: "hkbk.edu.in",
   /** Appended to the lowercase USN: 1HK24AI001 -> 1hk24ai001@hkbk */
@@ -161,9 +183,15 @@ async function main() {
   const seats = [];
   for (let serial = options.from; serial <= options.to; serial++) {
     const usn = usnFor(options.prefix, serial);
+    const fullName = STUDENT_NAMES[usn];
+    if (!fullName) {
+      // Skip USNs not present in the official sheet
+      continue;
+    }
     seats.push({
       serial,
       usn,
+      fullName,
       username: usn.toLowerCase(),
       email: `${usn.toLowerCase()}@${options.domain}`,
       password: passwordFor(usn, options),
@@ -186,7 +214,7 @@ async function main() {
 
   if (options.dry) {
     for (const seat of seats) {
-      console.log(`  would create  ${seat.usn}  ${seat.email}  ${seat.password}`);
+      console.log(`  would create  ${seat.usn} (${seat.fullName})  ${seat.email}  ${seat.password}`);
     }
     console.log("\nDry run — nothing was changed.\n");
     return;
@@ -196,6 +224,7 @@ async function main() {
   let skipped = 0;
   let reset = 0;
   let failed = 0;
+  let updatedName = 0;
 
   for (const seat of seats) {
     // Check before touching Auth: a student row already carrying this USN
@@ -203,11 +232,20 @@ async function main() {
     // would leave an orphan login with no academic record behind it.
     const { data: existing } = await db
       .from("students")
-      .select("id, user_id")
+      .select("id, user_id, full_name")
       .or(`usn.eq.${seat.usn},email.eq.${seat.email}`)
       .maybeSingle();
 
     if (existing) {
+      if (existing.full_name !== seat.fullName) {
+        await db
+          .from("students")
+          .update({ full_name: seat.fullName })
+          .eq("id", existing.id);
+        console.log(`  update  ${seat.usn}  name set to "${seat.fullName}"`);
+        updatedName++;
+      }
+
       if (!options.resetPasswords) {
         console.log(`  skip    ${seat.usn}  already registered`);
         skipped++;
@@ -250,7 +288,7 @@ async function main() {
       .from("students")
       .insert({
         user_id: userId,
-        full_name: seat.usn,
+        full_name: seat.fullName,
         dob: "2006-01-01",
         usn: seat.usn,
         phone: seat.phone,

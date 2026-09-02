@@ -68,14 +68,14 @@ export function AuthShell({
           </p>
           <h2 className="max-w-sm text-3xl leading-tight text-parchment">
             {aside?.heading ??
-              "One profile. A clearer path through your first year."}
+              "Everything you need to thrive in your first year."}
           </h2>
           <ul className="mt-8 space-y-4">
             {(
               aside?.points ?? [
-                "Record your academic background, interests, and goals once.",
-                "Your mentor sees what you need support with — without you chasing anyone.",
-                "Your development roadmap is reviewed by a real person before it reaches you.",
+                "Track your academic milestones, skills, and certifications in one place.",
+                "Connect seamlessly with mentors and faculty for timely guidance.",
+                "Access curated opportunities, events, and a personalized roadmap.",
               ]
             ).map((point) => (
               <li key={point} className="flex gap-3 text-sm text-indigo-100">

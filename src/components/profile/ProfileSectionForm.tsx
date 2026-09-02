@@ -6,6 +6,7 @@ import { FormMessage, SubmitButton } from "@/components/ui/FormStatus";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { idleState, type ActionState } from "@/lib/actions/form-state";
 import type { LookupOption } from "@/lib/queries/student";
+import { RESIDENCE_TYPES } from "@/config/residence";
 
 type ServerAction = (
   prev: ActionState,
@@ -20,6 +21,152 @@ const QUOTA_OPTIONS = [
   { value: "diploma_lateral", label: "Diploma lateral entry" },
   { value: "other", label: "Other" },
 ];
+
+export type PersonalDefaults = {
+  fullName: string | null;
+  usn: string | null;
+  email?: string | null;
+  departmentName?: string | null;
+  dob: string | null;
+  phone: string | null;
+  state: string | null;
+  city: string | null;
+  guardianName: string | null;
+  guardianPhone: string | null;
+  residenceType: string | null;
+};
+
+export function PersonalSectionForm({
+  action,
+  defaults,
+  complete,
+}: {
+  action: ServerAction;
+  defaults: PersonalDefaults;
+  complete: boolean;
+}) {
+  const [state, formAction] = useFormState(action, idleState);
+
+  return (
+    <Card as="section">
+      <CardHeader
+        title="Personal, guardian & residence details"
+        description="Your personal information, contact numbers, and accommodation during term."
+        eyebrow={complete ? "Complete" : "Needs attention"}
+      />
+      <CardBody>
+        <form action={formAction} noValidate className="space-y-4">
+          <FormMessage state={state} />
+
+          <div className="rounded-lg border border-indigo-100 bg-parchment-sunk/40 p-3.5">
+            <div className="grid gap-3 text-xs sm:grid-cols-3">
+              <div>
+                <span className="block font-medium text-ink-muted">USN</span>
+                <span className="font-mono text-sm text-indigo-950 font-medium">
+                  {defaults.usn ?? "—"}
+                </span>
+              </div>
+              <div>
+                <span className="block font-medium text-ink-muted">Department</span>
+                <span className="text-sm text-indigo-950 font-medium">
+                  {defaults.departmentName ?? "—"}
+                </span>
+              </div>
+              <div>
+                <span className="block font-medium text-ink-muted">Institutional Email</span>
+                <span className="break-all text-sm text-indigo-950 font-medium">
+                  {defaults.email ?? "—"}
+                </span>
+              </div>
+            </div>
+            <p className="mt-2 text-[11px] text-ink-faint">
+              USN, Department, and Email are managed by the portal administration.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="Full name"
+              name="fullName"
+              defaultValue={defaults.fullName ?? ""}
+              error={state.fieldErrors?.fullName}
+              required
+            />
+            <TextInput
+              label="Date of birth"
+              name="dob"
+              type="date"
+              defaultValue={defaults.dob ?? ""}
+              error={state.fieldErrors?.dob}
+              required
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="Mobile number"
+              name="phone"
+              type="tel"
+              placeholder="10-digit mobile"
+              defaultValue={defaults.phone ?? ""}
+              error={state.fieldErrors?.phone}
+              required
+            />
+            <Select
+              label="Residence type"
+              name="residenceType"
+              placeholder="Select where you live during term"
+              options={RESIDENCE_TYPES as unknown as Array<{ value: string; label: string }>}
+              defaultValue={defaults.residenceType ?? ""}
+              error={state.fieldErrors?.residenceType}
+              required
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="City / Town"
+              name="city"
+              defaultValue={defaults.city ?? ""}
+              error={state.fieldErrors?.city}
+              required
+            />
+            <TextInput
+              label="State"
+              name="state"
+              defaultValue={defaults.state ?? ""}
+              error={state.fieldErrors?.state}
+              required
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              label="Parent / Guardian's name"
+              name="guardianName"
+              defaultValue={defaults.guardianName ?? ""}
+              error={state.fieldErrors?.guardianName}
+              required
+            />
+            <TextInput
+              label="Guardian's mobile number"
+              name="guardianPhone"
+              type="tel"
+              placeholder="10-digit mobile"
+              defaultValue={defaults.guardianPhone ?? ""}
+              error={state.fieldErrors?.guardianPhone}
+              required
+            />
+          </div>
+
+          <div className="flex justify-end border-t border-indigo-100 pt-4">
+            <SubmitButton>Save section</SubmitButton>
+          </div>
+        </form>
+      </CardBody>
+    </Card>
+  );
+}
 
 export type AcademicDefaults = {
   tenthPercentage: number | null;

@@ -6,6 +6,7 @@ import { getOwnStudent, getProfileSnapshot } from "@/lib/queries/student";
 import { computeCompletionPercent } from "@/lib/profile-completion";
 import {
   academicSectionSchema,
+  personalSectionSchema,
   selectionSectionSchema,
 } from "@/lib/validation/student";
 import { fieldErrorsFrom, type ActionState } from "./form-state";
@@ -48,6 +49,64 @@ async function recomputeCompletion(studentId: string) {
 function revalidateProfileViews() {
   revalidatePath("/complete-profile");
   revalidatePath("/dashboard");
+}
+
+// --- Personal, guardian & residence details ---------------------------------
+
+export async function savePersonalSection(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const student = await getOwnStudent();
+  if (!student) {
+    return { status: "error", message: "Your session has expired. Sign in again." };
+  }
+
+  const parsed = personalSectionSchema.safeParse({
+    fullName: formData.get("fullName"),
+    dob: formData.get("dob"),
+    phone: formData.get("phone"),
+    state: formData.get("state"),
+    city: formData.get("city"),
+    guardianName: formData.get("guardianName"),
+    guardianPhone: formData.get("guardianPhone"),
+    residenceType: formData.get("residenceType"),
+  });
+
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: "Check the highlighted fields.",
+      fieldErrors: fieldErrorsFrom(parsed.error),
+    };
+  }
+
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("students")
+    .update({
+      full_name: parsed.data.fullName,
+      dob: parsed.data.dob,
+      phone: parsed.data.phone,
+      state: parsed.data.state,
+      city: parsed.data.city,
+      guardian_name: parsed.data.guardianName,
+      guardian_phone: parsed.data.guardianPhone,
+      residence_type: parsed.data.residenceType,
+    })
+    .eq("id", student.id);
+
+  if (error) {
+    const message = /duplicate key|unique/i.test(error.message)
+      ? "That phone number is already registered to another account."
+      : "Could not save. Please try again.";
+    return { status: "error", message };
+  }
+
+  await recomputeCompletion(student.id);
+  revalidateProfileViews();
+
+  return { status: "success", message: "Personal and contact details saved." };
 }
 
 // --- Academic background ----------------------------------------------------

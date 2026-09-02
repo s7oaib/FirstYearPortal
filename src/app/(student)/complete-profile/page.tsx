@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   AcademicSectionForm,
+  PersonalSectionForm,
   SelectionSectionForm,
 } from "@/components/profile/ProfileSectionForm";
 import { Card, CardBody, ProgressBar } from "@/components/ui/Card";
@@ -11,6 +12,7 @@ import {
   saveDomains,
   saveGoals,
   saveInterests,
+  savePersonalSection,
 } from "@/lib/actions/profile";
 import {
   getLookups,
@@ -76,19 +78,23 @@ export default async function CompleteProfilePage() {
         </CardBody>
       </Card>
 
-      {!byKey.identity.complete && (
-        <Card>
-          <CardBody>
-            <h2 className="text-base text-indigo-950">
-              Personal &amp; contact details
-            </h2>
-            <p className="mt-1.5 text-sm text-ink-muted">
-              {byKey.identity.missing} These were captured when you registered —
-              contact the portal administrator to have them corrected.
-            </p>
-          </CardBody>
-        </Card>
-      )}
+      <PersonalSectionForm
+        action={savePersonalSection}
+        complete={byKey.identity.complete}
+        defaults={{
+          fullName: student.fullName ?? null,
+          usn: student.usn ?? null,
+          email: student.email ?? null,
+          departmentName: student.departmentName ?? null,
+          dob: student.dob ?? null,
+          phone: student.phone ?? null,
+          state: student.state ?? null,
+          city: student.city ?? null,
+          guardianName: student.guardianName ?? null,
+          guardianPhone: student.guardianPhone ?? null,
+          residenceType: student.residenceType ?? null,
+        }}
+      />
 
       <AcademicSectionForm
         action={saveAcademicSection}

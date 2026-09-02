@@ -271,7 +271,7 @@ started** (spec'd in the original brief, no design work done yet).
 - **Also planned:** regeneration triggered by assessment results, and the
   variant tracks keyed on more than the first two goals.
 
-### 5.11 Notifications, reports, real-time updates — *Not started*
+### 5.11 Notifications, reports, real-time updates — *Shipped (CSV), PDF not built*
 - In-app notifications for the event types listed in the original brief
   (profile completion, assessment deadlines, results, events, achievement
   verification, roadmap updates, faculty feedback).
@@ -317,7 +317,7 @@ started** (spec'd in the original brief, no design work done yet).
 | 2. Foundation | Auth, RBAC, schema, branding, registration, mandatory profile gate | **Done** |
 | 3. Dashboards & analytics | Faculty, HOD, and admin dashboards, filters, charts, student detail, CSV export | **Done** |
 | 4. Extended modules | Achievements **done**; assessments, events, resources, recommendations, AI roadmap, notifications **not started** | **Partial** |
-| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 218 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
+| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 222 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
 
 ## 9. Open questions for stakeholders
 

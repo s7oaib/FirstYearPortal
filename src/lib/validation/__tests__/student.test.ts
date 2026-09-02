@@ -5,6 +5,7 @@ import {
   householdStepSchema,
   identityStepSchema,
   passwordSchema,
+  personalSectionSchema,
   usnSchema,
 } from "../student";
 
@@ -183,3 +184,43 @@ describe("academicSectionSchema", () => {
     ).toBe(false);
   });
 });
+
+describe("personalSectionSchema", () => {
+  const base = {
+    fullName: "Aisha Rahman",
+    dob: "2006-04-12",
+    phone: "9880012345",
+    state: "Karnataka",
+    city: "Bengaluru",
+    guardianName: "Rahman K",
+    guardianPhone: "9880054321",
+    residenceType: "hostel",
+  };
+
+  it("accepts a well-formed personal details section", () => {
+    expect(personalSectionSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("rejects invalid guardian or student mobile numbers", () => {
+    expect(
+      personalSectionSchema.safeParse({ ...base, guardianPhone: "12345" }).success,
+    ).toBe(false);
+    expect(
+      personalSectionSchema.safeParse({ ...base, phone: "invalid" }).success,
+    ).toBe(false);
+  });
+
+  it("rejects invalid residence types", () => {
+    expect(
+      personalSectionSchema.safeParse({ ...base, residenceType: "dormitory" })
+        .success,
+    ).toBe(false);
+  });
+
+  it("rejects short or empty guardian name", () => {
+    expect(
+      personalSectionSchema.safeParse({ ...base, guardianName: "A" }).success,
+    ).toBe(false);
+  });
+});
+
