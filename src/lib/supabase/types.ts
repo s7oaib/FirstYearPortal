@@ -18,6 +18,7 @@ export type UserRole = Role;
 export type AccountStatus = "pending" | "active" | "rejected" | "suspended";
 import type { ResidenceType } from "@/config/residence";
 import type { EventKind, RegistrationStatus } from "@/config/events";
+import type { ResourceKind } from "@/config/resources";
 import type {
   AssessmentKind,
   QuestionKind,
@@ -278,6 +279,84 @@ export type Database = {
           size_bytes: number;
         };
         Update: never;
+        Relationships: [];
+      };
+      resources: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          kind: ResourceKind;
+          provider: string | null;
+          url: string;
+          department_code: string | null;
+          semester: number | null;
+          estimated_hours: number | null;
+          is_free: boolean | null;
+          is_verified: boolean;
+          verified_by: string | null;
+          verified_at: string | null;
+          added_by: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          title: string;
+          description?: string | null;
+          kind?: ResourceKind;
+          provider?: string | null;
+          url: string;
+          department_code?: string | null;
+          semester?: number | null;
+          estimated_hours?: number | null;
+          is_free?: boolean | null;
+          added_by?: string | null;
+        };
+        Update: Partial<{
+          title: string;
+          description: string | null;
+          kind: ResourceKind;
+          provider: string | null;
+          url: string;
+          department_code: string | null;
+          semester: number | null;
+          estimated_hours: number | null;
+          is_free: boolean | null;
+          is_verified: boolean;
+          verified_by: string | null;
+          verified_at: string | null;
+          is_active: boolean;
+        }>;
+        Relationships: [];
+      };
+      resource_interests: {
+        Row: { resource_id: string; interest_id: number };
+        Insert: { resource_id: string; interest_id: number };
+        Update: never;
+        Relationships: [];
+      };
+      resource_goals: {
+        Row: { resource_id: string; goal_id: number };
+        Insert: { resource_id: string; goal_id: number };
+        Update: never;
+        Relationships: [];
+      };
+      resource_domains: {
+        Row: { resource_id: string; domain_id: number };
+        Insert: { resource_id: string; domain_id: number };
+        Update: never;
+        Relationships: [];
+      };
+      student_resources: {
+        Row: {
+          student_id: string;
+          resource_id: string;
+          saved_at: string;
+          completed_at: string | null;
+        };
+        Insert: { student_id: string; resource_id: string };
+        Update: Partial<{ completed_at: string | null }>;
         Relationships: [];
       };
       events: {

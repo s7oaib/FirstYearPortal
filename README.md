@@ -11,7 +11,7 @@ independent layers.
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6)
 ![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20RLS-3ecf8e)
-![Tests](https://img.shields.io/badge/tests-181%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-197%20passing-brightgreen)
 
 ---
 
@@ -190,6 +190,7 @@ In the Supabase dashboard, open **SQL Editor** and run each file in
 | `0012_multiple_roles.sql` | `user_roles` join table, so one account can hold several roles |
 | `0013_assessments.sql` | Assessment engine: question bank, attempts, answers, grading guards |
 | `0014_events.sql` | Events, registration with capacity and waiting list, attendance |
+| `0015_resources.sql` | Resource catalogue, tags, verification guard, saved lists |
 
 **0010 and 0011 must be run as two separate statements.** PostgreSQL will not
 let one transaction add an enum value and then use it, and both the SQL Editor
@@ -384,9 +385,10 @@ the caller is not entitled to.
 npm test
 ```
 
-181 unit tests covering profile-completion gate logic, every validation schema,
+197 unit tests covering profile-completion gate logic, every validation schema,
 directory filter parsing, CSV escaping, analytics aggregation, the role
-table, assessment auto-grading, and event registration rules.
+table, assessment auto-grading, event registration rules, and
+resource recommendation matching.
 
 Integration, RLS-policy, and end-to-end tests are planned.
 
@@ -416,7 +418,7 @@ is real rather than demo.
 | Charts over a filtered result set | Complete |
 | Assessment engine | Complete |
 | Events | Complete |
-| VTU resources and certification recommendations | Not started |
+| VTU resources and certification recommendations | Complete |
 | AI development roadmap | Not started |
 | Notifications and reporting | Not started |
 

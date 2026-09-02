@@ -4,8 +4,12 @@ import { PortalSwitcher } from "@/components/layout/PortalSwitcher";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { getOwnAdmin, getPendingCount } from "@/lib/queries/admin";
 import { getViewer } from "@/lib/queries/roles";
+import { getUnverifiedResourceCount } from "@/lib/queries/resources";
 
-function navItems(pendingCount: number): NavItem[] {
+function navItems(
+  pendingCount: number,
+  uncheckedResources: number,
+): NavItem[] {
   return [
     { href: "/admin", label: "Overview" },
     { href: "/admin/students", label: "All students" },
@@ -16,6 +20,11 @@ function navItems(pendingCount: number): NavItem[] {
     },
     { href: "/admin/assignments", label: "Faculty assignments" },
     { href: "/admin/departments", label: "Departments" },
+    {
+      href: "/admin/resources",
+      label: "Resources",
+      badge: uncheckedResources,
+    },
     { href: "/admin/audit", label: "Audit log" },
   ];
 }
@@ -37,15 +46,16 @@ export default async function AdminLayout({
 
   // Counted on every admin page render so the badge is never stale — it is a
   // single indexed COUNT, and a stale approval badge is worse than useless.
-  const [pendingCount, viewer] = await Promise.all([
+  const [pendingCount, viewer, uncheckedResources] = await Promise.all([
     getPendingCount(),
     getViewer(),
+    getUnverifiedResourceCount(),
   ]);
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <StudentNav
-        items={navItems(pendingCount)}
+        items={navItems(pendingCount, uncheckedResources)}
         studentName={admin.fullName}
         portalSwitcher={
           <PortalSwitcher roles={viewer?.roles ?? []} current="admin" />

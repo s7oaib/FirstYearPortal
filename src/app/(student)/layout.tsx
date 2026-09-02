@@ -14,7 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/achievements", label: "Achievements" },
   { href: "/assessments", label: "Assessments" },
   { href: "/events", label: "Events" },
-  { href: "#", label: "Resources", disabled: true },
+  { href: "/resources", label: "Resources" },
   { href: "#", label: "My roadmap", disabled: true },
 ];
 

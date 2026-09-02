@@ -229,12 +229,20 @@ started** (spec'd in the original brief, no design work done yet).
 - **Planned:** certificates for attendees, which need document generation and
   a storage bucket; and calendar export.
 
-### 5.9 VTU resources & certification recommendations — *Not started*
+### 5.9 VTU resources & certification recommendations — *Shipped*
 - Admin-managed, source-verified links to VTU scheme/syllabus documents and
   NPTEL/SWAYAM/vendor certifications — **no fabricated URLs or metadata**;
   unverified entries are visibly marked as such until an admin verifies them.
 - Recommendations personalised by department, interests, goals, domains, and
   assessment performance, each showing *why* it was recommended.
+- **Shipped:** the catalogue, tagging against the same interest/goal/domain
+  vocabulary students used at registration, administrator-only verification,
+  saved lists, and ranked recommendations that carry their reasons. The
+  migration seeds **no rows** — a plausible-looking URL nobody has opened is
+  exactly the fabricated metadata this section rules out, so the catalogue
+  starts empty and is filled by people.
+- **Planned:** matching on assessment performance, which needs results to
+  exist first; and bulk import for the VTU scheme documents.
 
 ### 5.10 AI-powered individual roadmap — *Not started*
 - Generated from the student's profile + assessment results; explainable
@@ -293,7 +301,7 @@ started** (spec'd in the original brief, no design work done yet).
 | 2. Foundation | Auth, RBAC, schema, branding, registration, mandatory profile gate | **Done** |
 | 3. Dashboards & analytics | Faculty, HOD, and admin dashboards, filters, charts, student detail, CSV export | **Done** |
 | 4. Extended modules | Achievements **done**; assessments, events, resources, recommendations, AI roadmap, notifications **not started** | **Partial** |
-| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 181 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
+| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 197 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
 
 ## 9. Open questions for stakeholders
 
