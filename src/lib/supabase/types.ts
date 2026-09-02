@@ -19,6 +19,8 @@ export type AccountStatus = "pending" | "active" | "rejected" | "suspended";
 import type { ResidenceType } from "@/config/residence";
 import type { EventKind, RegistrationStatus } from "@/config/events";
 import type { ResourceKind } from "@/config/resources";
+import type { Horizon } from "@/lib/roadmap/generate";
+import type { RoadmapSource, RoadmapStatus } from "@/config/roadmap";
 import type {
   AssessmentKind,
   QuestionKind,
@@ -279,6 +281,60 @@ export type Database = {
           size_bytes: number;
         };
         Update: never;
+        Relationships: [];
+      };
+      student_roadmaps: {
+        Row: {
+          id: string;
+          student_id: string;
+          generated_by: RoadmapSource;
+          provider: string | null;
+          model: string | null;
+          inputs_summary: string | null;
+          approval_status: RoadmapStatus;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          mentor_remarks: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          student_id: string;
+          generated_by?: RoadmapSource;
+          provider?: string | null;
+          model?: string | null;
+          inputs_summary?: string | null;
+          approval_status?: RoadmapStatus;
+        };
+        Update: Partial<{
+          approval_status: RoadmapStatus;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          mentor_remarks: string | null;
+        }>;
+        Relationships: [];
+      };
+      roadmap_milestones: {
+        Row: {
+          id: string;
+          roadmap_id: string;
+          horizon: Horizon;
+          title: string;
+          detail: string | null;
+          rationale: string;
+          position: number;
+          completed_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          roadmap_id: string;
+          horizon: Horizon;
+          title: string;
+          detail?: string | null;
+          rationale: string;
+          position?: number;
+        };
+        Update: Partial<{ completed_at: string | null }>;
         Relationships: [];
       };
       resources: {

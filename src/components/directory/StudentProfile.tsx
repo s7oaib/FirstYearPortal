@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import {
   Card,
   CardBody,
@@ -56,6 +57,7 @@ export function StudentProfile({
   backLabel,
   canVerify,
   mentorBadge,
+  roadmapPanel,
 }: {
   detail: StudentDetail;
   achievements: Achievement[];
@@ -65,6 +67,11 @@ export function StudentProfile({
   canVerify: boolean;
   /** Shown when the reader has guardian-level access to this student. */
   mentorBadge?: string;
+  /**
+   * Roadmap controls for this student. Passed in rather than rendered here
+   * so a reader with no mentoring relationship to act on can leave it out.
+   */
+  roadmapPanel?: ReactNode;
 }) {
   const { row, departmentName } = detail;
 
@@ -198,6 +205,8 @@ export function StudentProfile({
               )}
             </CardBody>
           </Card>
+
+          {roadmapPanel}
         </div>
 
         <div className="space-y-6">

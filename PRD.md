@@ -244,7 +244,7 @@ started** (spec'd in the original brief, no design work done yet).
 - **Planned:** matching on assessment performance, which needs results to
   exist first; and bulk import for the VTU scheme documents.
 
-### 5.10 AI-powered individual roadmap — *Not started*
+### 5.10 Individual development roadmap — *Partial*
 - Generated from the student's profile + assessment results; explainable
   (shows which inputs drove each recommendation), editable, regenerable.
 - Milestones at 30 days / 3–6 months / 1–4 years; progress tracking.
@@ -254,6 +254,22 @@ started** (spec'd in the original brief, no design work done yet).
   approval status.
 - **Rule-based fallback** if the AI provider is unavailable — the roadmap
   feature must never simply fail.
+- **Shipped:** the rule-based generator, milestones at all three horizons,
+  a required rationale on every milestone, the mentor review workflow, student
+  progress tracking, and supersede-on-regenerate so an approved plan is never
+  rewritten underneath its approval. The review promise is enforced in RLS: a
+  student cannot select an unapproved roadmap at all, so no unreviewed advice
+  can reach them even if the application forgets.
+- **Not built: the AI generation itself.** The generator interface exists and
+  records `source`, `provider`, and `model` on every version, but there is
+  only the rule-based implementation behind it. Provider selection is still
+  open (ARCHITECTURE section 11), and writing an integration against an
+  unchosen provider — untested, with no key — would be speculative code that
+  looks finished. The rule-based path is not a placeholder: it is the fallback
+  this section requires to exist regardless, and it works with nothing
+  configured.
+- **Also planned:** regeneration triggered by assessment results, and the
+  variant tracks keyed on more than the first two goals.
 
 ### 5.11 Notifications, reports, real-time updates — *Not started*
 - In-app notifications for the event types listed in the original brief
@@ -301,7 +317,7 @@ started** (spec'd in the original brief, no design work done yet).
 | 2. Foundation | Auth, RBAC, schema, branding, registration, mandatory profile gate | **Done** |
 | 3. Dashboards & analytics | Faculty, HOD, and admin dashboards, filters, charts, student detail, CSV export | **Done** |
 | 4. Extended modules | Achievements **done**; assessments, events, resources, recommendations, AI roadmap, notifications **not started** | **Partial** |
-| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 197 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
+| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 218 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
 
 ## 9. Open questions for stakeholders
 

@@ -4,6 +4,8 @@ import { StudentProfile } from "@/components/directory/StudentProfile";
 import { getOwnStaff } from "@/lib/queries/faculty";
 import { getStudentDetail } from "@/lib/queries/directory";
 import { getAchievementsForStudent } from "@/lib/queries/achievements";
+import { getRoadmapsForStudent } from "@/lib/queries/roadmaps";
+import { RoadmapPanel } from "@/components/roadmap/RoadmapPanel";
 
 export const metadata: Metadata = { title: "Student profile" };
 
@@ -15,9 +17,10 @@ export default async function HodStudentDetailPage({
   const staff = await getOwnStaff();
   if (!staff) redirect("/account-blocked?reason=no-staff-record");
 
-  const [detail, achievements] = await Promise.all([
+  const [detail, achievements, roadmaps] = await Promise.all([
     getStudentDetail(params.id),
     getAchievementsForStudent(params.id),
+    getRoadmapsForStudent(params.id),
   ]);
 
   // RLS makes a student outside this department simply not exist for the
@@ -33,6 +36,9 @@ export default async function HodStudentDetailPage({
       backLabel="Back to department students"
       canVerify
       mentorBadge={`${staff.departmentCode} department`}
+      roadmapPanel={
+        <RoadmapPanel studentId={params.id} roadmaps={roadmaps} />
+      }
     />
   );
 }

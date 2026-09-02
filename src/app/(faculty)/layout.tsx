@@ -5,6 +5,7 @@ import { LogoutButton } from "@/components/auth/LogoutButton";
 import { getOwnFaculty } from "@/lib/queries/faculty";
 import { getPendingVerificationCount } from "@/lib/queries/achievements";
 import { getPendingMarkingCount } from "@/lib/queries/assessments";
+import { getPendingRoadmapCount } from "@/lib/queries/roadmaps";
 
 /**
  * Shell for the faculty area. Mirrors the student shell (ARCHITECTURE 7) —
@@ -14,6 +15,7 @@ import { getPendingMarkingCount } from "@/lib/queries/assessments";
 function navItems(
   pendingVerifications: number,
   pendingMarking: number,
+  pendingRoadmaps: number,
 ): NavItem[] {
   return [
     { href: "/faculty", label: "Dashboard" },
@@ -29,7 +31,11 @@ function navItems(
       badge: pendingMarking,
     },
     { href: "/faculty/events", label: "Events" },
-    { href: "#", label: "Roadmap reviews", disabled: true },
+    {
+      href: "/faculty/roadmaps",
+      label: "Roadmap reviews",
+      badge: pendingRoadmaps,
+    },
   ];
 }
 
@@ -48,15 +54,17 @@ export default async function FacultyLayout({
 
   // One indexed COUNT per render, so the badge cannot go stale — the same
   // trade the admin shell makes for its approvals count.
-  const [pendingVerifications, pendingMarking] = await Promise.all([
-    getPendingVerificationCount(),
-    getPendingMarkingCount(),
-  ]);
+  const [pendingVerifications, pendingMarking, pendingRoadmaps] =
+    await Promise.all([
+      getPendingVerificationCount(),
+      getPendingMarkingCount(),
+      getPendingRoadmapCount(),
+    ]);
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <StudentNav
-        items={navItems(pendingVerifications, pendingMarking)}
+        items={navItems(pendingVerifications, pendingMarking, pendingRoadmaps)}
         studentName={faculty.fullName}
         portalSwitcher={
           <PortalSwitcher roles={faculty.roles} current="faculty" />

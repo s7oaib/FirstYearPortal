@@ -111,6 +111,21 @@ const CHECKS = [
     label: "one account, multiple roles",
     probe: () => tableExists("user_roles"),
   },
+  {
+    migration: "0013_assessments.sql",
+    label: "assessment engine",
+    probe: () => tableExists("assessments"),
+  },
+  {
+    migration: "0014_events.sql",
+    label: "events, registration, attendance",
+    probe: () => tableExists("events"),
+  },
+  {
+    migration: "0015_resources.sql",
+    label: "resource catalogue and recommendations",
+    probe: () => tableExists("resources"),
+  },
 ];
 
 console.log(`\nChecking ${url}\n`);

@@ -5,6 +5,7 @@ import { LogoutButton } from "@/components/auth/LogoutButton";
 import { getOwnStaff } from "@/lib/queries/faculty";
 import { getPendingVerificationCount } from "@/lib/queries/achievements";
 import { getPendingMarkingCount } from "@/lib/queries/assessments";
+import { getPendingRoadmapCount } from "@/lib/queries/roadmaps";
 
 /**
  * Shell for the Head of Department area.
@@ -19,6 +20,7 @@ import { getPendingMarkingCount } from "@/lib/queries/assessments";
 function navItems(
   pendingVerifications: number,
   pendingMarking: number,
+  pendingRoadmaps: number,
 ): NavItem[] {
   return [
     { href: "/hod", label: "Dashboard" },
@@ -34,6 +36,11 @@ function navItems(
       badge: pendingMarking,
     },
     { href: "/hod/events", label: "Events" },
+    {
+      href: "/hod/roadmaps",
+      label: "Roadmap reviews",
+      badge: pendingRoadmaps,
+    },
   ];
 }
 
@@ -48,15 +55,17 @@ export default async function HodLayout({
   // primary role is `admin` and who also heads a department.
   if (!staff.roles.includes("hod")) redirect("/login");
 
-  const [pendingVerifications, pendingMarking] = await Promise.all([
-    getPendingVerificationCount(),
-    getPendingMarkingCount(),
-  ]);
+  const [pendingVerifications, pendingMarking, pendingRoadmaps] =
+    await Promise.all([
+      getPendingVerificationCount(),
+      getPendingMarkingCount(),
+      getPendingRoadmapCount(),
+    ]);
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <StudentNav
-        items={navItems(pendingVerifications, pendingMarking)}
+        items={navItems(pendingVerifications, pendingMarking, pendingRoadmaps)}
         studentName={staff.fullName}
         portalSwitcher={<PortalSwitcher roles={staff.roles} current="hod" />}
       />

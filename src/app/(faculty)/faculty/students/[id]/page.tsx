@@ -4,6 +4,8 @@ import { StudentProfile } from "@/components/directory/StudentProfile";
 import { getOwnStaff } from "@/lib/queries/faculty";
 import { getStudentDetail } from "@/lib/queries/directory";
 import { getAchievementsForStudent } from "@/lib/queries/achievements";
+import { getRoadmapsForStudent } from "@/lib/queries/roadmaps";
+import { RoadmapPanel } from "@/components/roadmap/RoadmapPanel";
 
 export const metadata: Metadata = { title: "Student profile" };
 
@@ -15,9 +17,10 @@ export default async function StudentDetailPage({
   const staff = await getOwnStaff();
   if (!staff) redirect("/login");
 
-  const [detail, achievements] = await Promise.all([
+  const [detail, achievements, roadmaps] = await Promise.all([
     getStudentDetail(params.id),
     getAchievementsForStudent(params.id),
+    getRoadmapsForStudent(params.id),
   ]);
 
   // RLS makes an unauthorised student's row simply not exist for this caller,
@@ -34,6 +37,9 @@ export default async function StudentDetailPage({
       backLabel="Back to my students"
       canVerify
       mentorBadge="You mentor this student"
+      roadmapPanel={
+        <RoadmapPanel studentId={params.id} roadmaps={roadmaps} />
+      }
     />
   );
 }

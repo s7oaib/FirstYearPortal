@@ -15,7 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/assessments", label: "Assessments" },
   { href: "/events", label: "Events" },
   { href: "/resources", label: "Resources" },
-  { href: "#", label: "My roadmap", disabled: true },
+  { href: "/roadmap", label: "My roadmap" },
 ];
 
 export default async function StudentLayout({
