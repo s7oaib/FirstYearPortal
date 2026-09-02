@@ -18,6 +18,11 @@ export type UserRole = Role;
 export type AccountStatus = "pending" | "active" | "rejected" | "suspended";
 import type { ResidenceType } from "@/config/residence";
 import type {
+  AssessmentKind,
+  QuestionKind,
+  AttemptStatus,
+} from "@/config/assessments";
+import type {
   AchievementCategory,
   AchievementLevel,
   VerificationStatus,
@@ -274,6 +279,179 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      assessments: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          kind: AssessmentKind;
+          created_by: string | null;
+          department_code: string | null;
+          semester: number | null;
+          section: string | null;
+          opens_at: string | null;
+          closes_at: string | null;
+          duration_minutes: number | null;
+          max_attempts: number;
+          pass_percentage: number | null;
+          randomise_questions: boolean;
+          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          title: string;
+          description?: string | null;
+          kind?: AssessmentKind;
+          created_by?: string | null;
+          department_code?: string | null;
+          semester?: number | null;
+          section?: string | null;
+          opens_at?: string | null;
+          closes_at?: string | null;
+          duration_minutes?: number | null;
+          max_attempts?: number;
+          pass_percentage?: number | null;
+          randomise_questions?: boolean;
+          is_published?: boolean;
+        };
+        Update: Partial<{
+          title: string;
+          description: string | null;
+          kind: AssessmentKind;
+          department_code: string | null;
+          semester: number | null;
+          section: string | null;
+          opens_at: string | null;
+          closes_at: string | null;
+          duration_minutes: number | null;
+          max_attempts: number;
+          pass_percentage: number | null;
+          randomise_questions: boolean;
+          is_published: boolean;
+        }>;
+        Relationships: [];
+      };
+      questions: {
+        Row: {
+          id: string;
+          assessment_id: string;
+          kind: QuestionKind;
+          prompt: string;
+          help_text: string | null;
+          position: number;
+          points: number;
+          required: boolean;
+          created_at: string;
+        };
+        Insert: {
+          assessment_id: string;
+          kind: QuestionKind;
+          prompt: string;
+          help_text?: string | null;
+          position?: number;
+          points?: number;
+          required?: boolean;
+        };
+        Update: Partial<{
+          kind: QuestionKind;
+          prompt: string;
+          help_text: string | null;
+          position: number;
+          points: number;
+          required: boolean;
+        }>;
+        Relationships: [];
+      };
+      question_options: {
+        Row: {
+          id: string;
+          question_id: string;
+          label: string;
+          position: number;
+          is_correct: boolean | null;
+          score_value: number;
+          created_at: string;
+        };
+        Insert: {
+          question_id: string;
+          label: string;
+          position?: number;
+          is_correct?: boolean | null;
+          score_value?: number;
+        };
+        Update: Partial<{
+          label: string;
+          position: number;
+          is_correct: boolean | null;
+          score_value: number;
+        }>;
+        Relationships: [];
+      };
+      assessment_attempts: {
+        Row: {
+          id: string;
+          assessment_id: string;
+          student_id: string;
+          attempt_number: number;
+          status: AttemptStatus;
+          started_at: string;
+          submitted_at: string | null;
+          score: number | null;
+          max_score: number | null;
+          percentage: number | null;
+          passed: boolean | null;
+          graded_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          assessment_id: string;
+          student_id: string;
+          attempt_number?: number;
+          status?: AttemptStatus;
+        };
+        Update: Partial<{
+          status: AttemptStatus;
+          submitted_at: string | null;
+          score: number | null;
+          max_score: number | null;
+          percentage: number | null;
+          passed: boolean | null;
+          graded_at: string | null;
+        }>;
+        Relationships: [];
+      };
+      student_answers: {
+        Row: {
+          id: string;
+          attempt_id: string;
+          question_id: string;
+          selected_option_ids: string[];
+          text_answer: string | null;
+          awarded_points: number | null;
+          graded_by: string | null;
+          graded_at: string | null;
+          grader_remarks: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          attempt_id: string;
+          question_id: string;
+          selected_option_ids?: string[];
+          text_answer?: string | null;
+        };
+        Update: Partial<{
+          selected_option_ids: string[];
+          text_answer: string | null;
+          awarded_points: number | null;
+          graded_by: string | null;
+          graded_at: string | null;
+          grader_remarks: string | null;
+        }>;
+        Relationships: [];
+      };
       admins: {
         Row: {
           id: string;
@@ -440,6 +618,28 @@ export type Database = {
           guardian_name: string | null;
           guardian_phone: string | null;
           guardian_visible: boolean;
+        };
+        Relationships: [];
+      };
+      exam_questions: {
+        Row: {
+          id: string;
+          assessment_id: string;
+          kind: QuestionKind;
+          prompt: string;
+          help_text: string | null;
+          position: number;
+          points: number;
+          required: boolean;
+        };
+        Relationships: [];
+      };
+      exam_options: {
+        Row: {
+          id: string;
+          question_id: string;
+          label: string;
+          position: number;
         };
         Relationships: [];
       };

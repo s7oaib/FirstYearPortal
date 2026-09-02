@@ -4,13 +4,17 @@ import { PortalSwitcher } from "@/components/layout/PortalSwitcher";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { getOwnFaculty } from "@/lib/queries/faculty";
 import { getPendingVerificationCount } from "@/lib/queries/achievements";
+import { getPendingMarkingCount } from "@/lib/queries/assessments";
 
 /**
  * Shell for the faculty area. Mirrors the student shell (ARCHITECTURE 7) —
  * the route group `(faculty)` only attaches this layout, it does not change
  * URLs.
  */
-function navItems(pendingVerifications: number): NavItem[] {
+function navItems(
+  pendingVerifications: number,
+  pendingMarking: number,
+): NavItem[] {
   return [
     { href: "/faculty", label: "Dashboard" },
     { href: "/faculty/students", label: "My students" },
@@ -19,7 +23,11 @@ function navItems(pendingVerifications: number): NavItem[] {
       label: "Achievements to verify",
       badge: pendingVerifications,
     },
-    { href: "#", label: "Assessments", disabled: true },
+    {
+      href: "/faculty/assessments",
+      label: "Assessments",
+      badge: pendingMarking,
+    },
     { href: "#", label: "Events", disabled: true },
     { href: "#", label: "Roadmap reviews", disabled: true },
   ];
@@ -40,12 +48,15 @@ export default async function FacultyLayout({
 
   // One indexed COUNT per render, so the badge cannot go stale — the same
   // trade the admin shell makes for its approvals count.
-  const pendingVerifications = await getPendingVerificationCount();
+  const [pendingVerifications, pendingMarking] = await Promise.all([
+    getPendingVerificationCount(),
+    getPendingMarkingCount(),
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <StudentNav
-        items={navItems(pendingVerifications)}
+        items={navItems(pendingVerifications, pendingMarking)}
         studentName={faculty.fullName}
         portalSwitcher={
           <PortalSwitcher roles={faculty.roles} current="faculty" />

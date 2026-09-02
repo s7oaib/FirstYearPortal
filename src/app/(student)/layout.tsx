@@ -12,7 +12,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/complete-profile", label: "My profile" },
   { href: "/achievements", label: "Achievements" },
-  { href: "#", label: "Assessments", disabled: true },
+  { href: "/assessments", label: "Assessments" },
   { href: "#", label: "Events", disabled: true },
   { href: "#", label: "Resources", disabled: true },
   { href: "#", label: "My roadmap", disabled: true },

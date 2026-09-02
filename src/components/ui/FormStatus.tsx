@@ -15,12 +15,21 @@ export function SubmitButton({
   variant = "primary",
   size = "md",
   className,
+  name,
+  value,
 }: {
   children: React.ReactNode;
   pendingLabel?: string;
   variant?: "primary" | "secondary";
   size?: "sm" | "md" | "lg";
   className?: string;
+  /**
+   * Forwarded so one form can carry several submit buttons that mean
+   * different things — saving a draft versus submitting it. The posted
+   * name/value is what the server action reads to tell them apart.
+   */
+  name?: string;
+  value?: string;
 }) {
   const { pending } = useFormStatus();
 

@@ -11,7 +11,7 @@ independent layers.
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6)
 ![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20RLS-3ecf8e)
-![Tests](https://img.shields.io/badge/tests-136%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-162%20passing-brightgreen)
 
 ---
 
@@ -188,6 +188,7 @@ In the Supabase dashboard, open **SQL Editor** and run each file in
 | `0010_hod_role_enum.sql` | Adds `hod` to the `user_role` enum — **on its own, nothing else** |
 | `0011_hod_scope_and_admin_allowlist.sql` | HOD department scope, administrator allow-list and its guard trigger |
 | `0012_multiple_roles.sql` | `user_roles` join table, so one account can hold several roles |
+| `0013_assessments.sql` | Assessment engine: question bank, attempts, answers, grading guards |
 
 **0010 and 0011 must be run as two separate statements.** PostgreSQL will not
 let one transaction add an enum value and then use it, and both the SQL Editor
@@ -382,8 +383,9 @@ the caller is not entitled to.
 npm test
 ```
 
-136 unit tests covering profile-completion gate logic, every validation schema,
-directory filter parsing, CSV escaping, and analytics aggregation.
+162 unit tests covering profile-completion gate logic, every validation schema,
+directory filter parsing, CSV escaping, analytics aggregation, the role
+table, and assessment auto-grading.
 
 Integration, RLS-policy, and end-to-end tests are planned.
 
@@ -411,7 +413,7 @@ is real rather than demo.
 | Admin analytics, student directory, approvals, roles, assignments, departments, audit | Complete |
 | Achievements | Complete |
 | Charts over a filtered result set | Complete |
-| Assessment engine | Not started |
+| Assessment engine | Complete |
 | Events | Not started |
 | VTU resources and certification recommendations | Not started |
 | AI development roadmap | Not started |

@@ -4,6 +4,7 @@ import { PortalSwitcher } from "@/components/layout/PortalSwitcher";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { getOwnStaff } from "@/lib/queries/faculty";
 import { getPendingVerificationCount } from "@/lib/queries/achievements";
+import { getPendingMarkingCount } from "@/lib/queries/assessments";
 
 /**
  * Shell for the Head of Department area.
@@ -15,7 +16,10 @@ import { getPendingVerificationCount } from "@/lib/queries/achievements";
  * rather than to `/login`, because `/login` would bounce them straight back
  * here and the two would redirect at each other forever.
  */
-function navItems(pendingVerifications: number): NavItem[] {
+function navItems(
+  pendingVerifications: number,
+  pendingMarking: number,
+): NavItem[] {
   return [
     { href: "/hod", label: "Dashboard" },
     { href: "/hod/students", label: "Department students" },
@@ -24,7 +28,11 @@ function navItems(pendingVerifications: number): NavItem[] {
       label: "Achievements to verify",
       badge: pendingVerifications,
     },
-    { href: "#", label: "Assessments", disabled: true },
+    {
+      href: "/hod/assessments",
+      label: "Assessments",
+      badge: pendingMarking,
+    },
     { href: "#", label: "Events", disabled: true },
   ];
 }
@@ -40,12 +48,15 @@ export default async function HodLayout({
   // primary role is `admin` and who also heads a department.
   if (!staff.roles.includes("hod")) redirect("/login");
 
-  const pendingVerifications = await getPendingVerificationCount();
+  const [pendingVerifications, pendingMarking] = await Promise.all([
+    getPendingVerificationCount(),
+    getPendingMarkingCount(),
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <StudentNav
-        items={navItems(pendingVerifications)}
+        items={navItems(pendingVerifications, pendingMarking)}
         studentName={staff.fullName}
         portalSwitcher={<PortalSwitcher roles={staff.roles} current="hod" />}
       />

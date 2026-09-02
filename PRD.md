@@ -194,7 +194,7 @@ started** (spec'd in the original brief, no design work done yet).
 - **Planned:** donut and line/stacked chart forms where the data's job calls
   for them.
 
-### 5.7 Assessment engine — *Not started*
+### 5.7 Assessment engine — *Shipped*
 - Question bank (single/multiple-choice, true/false, short/long answer,
   Likert), assessment builder (target audience, timing, attempts,
   randomisation, pass criteria), auto-grading for objective items, faculty
@@ -203,8 +203,18 @@ started** (spec'd in the original brief, no design work done yet).
   disclosure, restricted visibility to student + mentor, no use in
   opportunity decisions — these constraints are product requirements, not
   optional copy.
-- **English assessment:** section-wise scoring (grammar, vocabulary, reading,
-  writing, communication readiness); no unearned CEFR-level claims.
+- **English assessment:** carried as its own assessment kind. Section-wise
+  scoring is not yet broken out — an English paper currently scores as one
+  total — and no CEFR level is claimed anywhere, which is the constraint that
+  actually mattered.
+- **Shipped:** the builder, six question types, publication gating, the
+  sitting screen with save-and-resume, auto-grading of objective and Likert
+  items, mentor marking of written answers, and per-attempt results for the
+  student. Psychometric consent, disclosure, and mentor-only visibility are
+  enforced in RLS, not only in copy.
+- **Planned:** section-wise English scoring, question banks reusable across
+  papers, and a timer that enforces `duration_minutes` rather than only
+  displaying it.
 
 ### 5.8 Events — *Not started*
 - Faculty/admin create, publish, and track events (capacity, eligibility,
@@ -276,7 +286,7 @@ started** (spec'd in the original brief, no design work done yet).
 | 2. Foundation | Auth, RBAC, schema, branding, registration, mandatory profile gate | **Done** |
 | 3. Dashboards & analytics | Faculty, HOD, and admin dashboards, filters, charts, student detail, CSV export | **Done** |
 | 4. Extended modules | Achievements **done**; assessments, events, resources, recommendations, AI roadmap, notifications **not started** | **Partial** |
-| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 136 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
+| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 162 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
 
 ## 9. Open questions for stakeholders
 
