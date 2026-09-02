@@ -17,6 +17,7 @@ import type { Role } from "@/config/roles";
 export type UserRole = Role;
 export type AccountStatus = "pending" | "active" | "rejected" | "suspended";
 import type { ResidenceType } from "@/config/residence";
+import type { EventKind, RegistrationStatus } from "@/config/events";
 import type {
   AssessmentKind,
   QuestionKind,
@@ -277,6 +278,91 @@ export type Database = {
           size_bytes: number;
         };
         Update: never;
+        Relationships: [];
+      };
+      events: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          kind: EventKind;
+          venue: string | null;
+          created_by: string | null;
+          department_code: string | null;
+          semester: number | null;
+          section: string | null;
+          starts_at: string;
+          ends_at: string | null;
+          registration_deadline: string | null;
+          capacity: number | null;
+          allow_waitlist: boolean;
+          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          title: string;
+          description?: string | null;
+          kind?: EventKind;
+          venue?: string | null;
+          created_by?: string | null;
+          department_code?: string | null;
+          semester?: number | null;
+          section?: string | null;
+          starts_at: string;
+          ends_at?: string | null;
+          registration_deadline?: string | null;
+          capacity?: number | null;
+          allow_waitlist?: boolean;
+          is_published?: boolean;
+        };
+        Update: Partial<{
+          title: string;
+          description: string | null;
+          kind: EventKind;
+          venue: string | null;
+          department_code: string | null;
+          semester: number | null;
+          section: string | null;
+          starts_at: string;
+          ends_at: string | null;
+          registration_deadline: string | null;
+          capacity: number | null;
+          allow_waitlist: boolean;
+          is_published: boolean;
+        }>;
+        Relationships: [];
+      };
+      event_registrations: {
+        Row: {
+          id: string;
+          event_id: string;
+          student_id: string;
+          status: RegistrationStatus;
+          registered_at: string;
+          cancelled_at: string | null;
+          attended: boolean | null;
+          marked_by: string | null;
+          marked_at: string | null;
+          feedback_rating: number | null;
+          feedback_comment: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          event_id: string;
+          student_id: string;
+          status?: RegistrationStatus;
+        };
+        Update: Partial<{
+          status: RegistrationStatus;
+          cancelled_at: string | null;
+          attended: boolean | null;
+          marked_by: string | null;
+          marked_at: string | null;
+          feedback_rating: number | null;
+          feedback_comment: string | null;
+        }>;
         Relationships: [];
       };
       assessments: {

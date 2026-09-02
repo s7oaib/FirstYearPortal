@@ -33,7 +33,7 @@ function navItems(
       label: "Assessments",
       badge: pendingMarking,
     },
-    { href: "#", label: "Events", disabled: true },
+    { href: "/hod/events", label: "Events" },
   ];
 }
 

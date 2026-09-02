@@ -28,7 +28,7 @@ function navItems(
       label: "Assessments",
       badge: pendingMarking,
     },
-    { href: "#", label: "Events", disabled: true },
+    { href: "/faculty/events", label: "Events" },
     { href: "#", label: "Roadmap reviews", disabled: true },
   ];
 }

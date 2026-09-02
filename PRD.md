@@ -216,11 +216,18 @@ started** (spec'd in the original brief, no design work done yet).
   papers, and a timer that enforces `duration_minutes` rather than only
   displaying it.
 
-### 5.8 Events — *Not started*
+### 5.8 Events — *Shipped*
 - Faculty/admin create, publish, and track events (capacity, eligibility,
-  registration deadline, attendance, certificates, feedback).
-- Students browse, register, cancel (if permitted), and view participation
-  history.
+  registration deadline, attendance, feedback).
+- Students browse, register, cancel, and view participation history.
+- **Shipped:** the builder with audience scoping, capacity with an automatic
+  waiting list, registration and cancellation, the register, and post-event
+  feedback from students who attended. Capacity is enforced by a trigger that
+  locks the event row before counting — two students clicking at the same
+  moment would both pass an application-level check, so this one genuinely
+  cannot live in TypeScript.
+- **Planned:** certificates for attendees, which need document generation and
+  a storage bucket; and calendar export.
 
 ### 5.9 VTU resources & certification recommendations — *Not started*
 - Admin-managed, source-verified links to VTU scheme/syllabus documents and
@@ -286,7 +293,7 @@ started** (spec'd in the original brief, no design work done yet).
 | 2. Foundation | Auth, RBAC, schema, branding, registration, mandatory profile gate | **Done** |
 | 3. Dashboards & analytics | Faculty, HOD, and admin dashboards, filters, charts, student detail, CSV export | **Done** |
 | 4. Extended modules | Achievements **done**; assessments, events, resources, recommendations, AI roadmap, notifications **not started** | **Partial** |
-| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 162 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
+| 5. Verification | Full test suite, security/accessibility review, production build | **Partial** — 181 unit tests, typecheck, lint, and production build all pass; no integration/e2e tests yet |
 
 ## 9. Open questions for stakeholders
 
