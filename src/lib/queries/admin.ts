@@ -110,21 +110,25 @@ export type AdminOverview = {
 export async function getAdminOverview(): Promise<AdminOverview> {
   const supabase = createClient();
 
-  const [students, departmentRows, facultyCount, pendingCount] = await Promise.all([
-    fetchAllStudents(),
-    supabase.from("departments").select("code, name").order("name"),
-    supabase.from("faculty").select("id", { count: "exact", head: true }),
-    supabase
-      .from("users")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "pending"),
-  ]);
+  // `listMarkComponents` joins the first wave: it depends on nothing here, and
+  // a Supabase round-trip costs ~200ms, so awaiting it on its own afterwards
+  // added a fifth of a second to every load of this page for no reason.
+  const [students, departmentRows, facultyCount, pendingCount, markComponents] =
+    await Promise.all([
+      fetchAllStudents(),
+      supabase.from("departments").select("code, name").order("name"),
+      supabase.from("faculty").select("id", { count: "exact", head: true }),
+      supabase
+        .from("users")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending"),
+      listMarkComponents(),
+    ]);
 
   const departments = departmentRows.data ?? [];
 
-  // Marks are fetched after the students, because the rows have to be paired
-  // with a department and `student_directory` is where that lives.
-  const markComponents = await listMarkComponents();
+  // This one genuinely has to wait: the mark rows are paired with a
+  // department, and `student_directory` is where that lives.
   const markRows = await listMarkRowsForAnalytics(
     new Map(students.map((s) => [s.id, s.departmentCode])),
   );

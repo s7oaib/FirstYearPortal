@@ -114,15 +114,20 @@ export async function getMarksGrid(
 ): Promise<MarksGrid | null> {
   const supabase = createClient();
 
-  const { data: subject } = await supabase
-    .from("vtu_subjects")
-    .select("id, department_code, semester")
-    .eq("id", subjectId)
-    .single();
+  // Issued together: the component list does not depend on the subject, and a
+  // Supabase round-trip from here costs ~200ms, so awaiting them in sequence
+  // spends a fifth of a second doing nothing. Same reasoning throughout this
+  // file — only genuinely dependent reads are allowed to wait for each other.
+  const [{ data: subject }, components] = await Promise.all([
+    supabase
+      .from("vtu_subjects")
+      .select("id, department_code, semester")
+      .eq("id", subjectId)
+      .single(),
+    listMarkComponents(),
+  ]);
 
   if (!subject) return null;
-
-  const components = await listMarkComponents();
 
   let rosterQuery = supabase
     .from("student_directory")
@@ -367,16 +372,27 @@ export async function listMarksForExport(
 
   // Chunked: a department export can exceed what one `in` filter should carry.
   const CHUNK = 200;
-  const markRows: MarkRow[] = [];
+  const chunks: string[][] = [];
   for (let i = 0; i < studentIds.length; i += CHUNK) {
-    const { data } = await supabase
-      .from("student_subject_marks")
-      .select(
-        "student_id, subject_id, component_code, marks, max_marks, remark, published_at",
-      )
-      .in("student_id", studentIds.slice(i, i + CHUNK));
-    markRows.push(...((data ?? []) as MarkRow[]));
+    chunks.push(studentIds.slice(i, i + CHUNK));
   }
+
+  // Chunks are independent, so they go out together. In series an
+  // institution-wide export would pay a full round-trip per 200 students.
+  const responses = await Promise.all(
+    chunks.map((ids) =>
+      supabase
+        .from("student_subject_marks")
+        .select(
+          "student_id, subject_id, component_code, marks, max_marks, remark, published_at",
+        )
+        .in("student_id", ids),
+    ),
+  );
+
+  const markRows: MarkRow[] = responses.flatMap(
+    ({ data }) => (data ?? []) as MarkRow[],
+  );
 
   if (markRows.length === 0) return [];
 
@@ -456,12 +472,22 @@ export async function listMarkRowsForAnalytics(
   const CHUNK = 200;
   const rows: AnalyticsMarkRow[] = [];
 
+  const chunks: string[][] = [];
   for (let i = 0; i < studentIds.length; i += CHUNK) {
-    const { data } = await supabase
-      .from("student_subject_marks")
-      .select("student_id, component_code, marks, max_marks, published_at")
-      .in("student_id", studentIds.slice(i, i + CHUNK));
+    chunks.push(studentIds.slice(i, i + CHUNK));
+  }
 
+  // Together rather than in series — see listMarksForExport.
+  const responses = await Promise.all(
+    chunks.map((ids) =>
+      supabase
+        .from("student_subject_marks")
+        .select("student_id, component_code, marks, max_marks, published_at")
+        .in("student_id", ids),
+    ),
+  );
+
+  for (const { data } of responses) {
     for (const row of (data ?? []) as Array<{
       student_id: string;
       component_code: string;
@@ -576,15 +602,18 @@ export async function getStudentMarks(
   studentId: string,
 ): Promise<StudentSubjectMarks[]> {
   const supabase = createClient();
-  const components = await listMarkComponents();
 
-  const { data } = await supabase
-    .from("student_subject_marks")
-    .select(
-      "student_id, subject_id, component_code, marks, max_marks, remark, published_at",
-    )
-    .eq("student_id", studentId)
-    .limit(500);
+  // Independent of each other, so issued together — see getMarksGrid.
+  const [components, { data }] = await Promise.all([
+    listMarkComponents(),
+    supabase
+      .from("student_subject_marks")
+      .select(
+        "student_id, subject_id, component_code, marks, max_marks, remark, published_at",
+      )
+      .eq("student_id", studentId)
+      .limit(500),
+  ]);
 
   const markRows = (data ?? []) as MarkRow[];
   if (markRows.length === 0) return [];
